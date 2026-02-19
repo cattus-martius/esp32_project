@@ -10,8 +10,8 @@
 #include <ESP32Servo.h>
 
 // ===== НАЛАШТУВАННЯ WiFi =====
-const char* ssid = "YOUR_WIFI_NAME";
-const char* password = "YOUR_WIFI_PASSWORD";
+const char* ssid = "vadymko@home";
+const char* password = "sOSSDnpvva";
 
 // Веб-сервер на порту 80
 WebServer server(80);
@@ -37,7 +37,7 @@ int cycleDelay = 300;  // Затримка між рухами в мс
 
 // ===== API ENDPOINT: GET /api/status =====
 void handleApiStatus() {
-  StaticJsonDocument<256> doc;
+  JsonDocument doc;
   
   doc["status"] = "ok";
   doc["led"] = ledState ? "on" : "off";
@@ -64,7 +64,7 @@ void handleApiLed() {
   }
   
   String body = server.arg("plain");
-  StaticJsonDocument<100> doc;
+  JsonDocument doc;
   DeserializationError error = deserializeJson(doc, body);
   
   if (error) {
@@ -100,7 +100,7 @@ void handleApiServo() {
   }
   
   String body = server.arg("plain");
-  StaticJsonDocument<100> doc;
+  JsonDocument doc;
   DeserializationError error = deserializeJson(doc, body);
   
   if (error) {
@@ -121,7 +121,7 @@ void handleApiServo() {
   currentAngle = angle;
   commandCount++;
   
-  StaticJsonDocument<100> responseDoc;
+  JsonDocument responseDoc;
   responseDoc["status"] = "ok";
   responseDoc["angle"] = angle;
   
@@ -141,7 +141,7 @@ void handleApiServoCycle() {
   }
   
   String body = server.arg("plain");
-  StaticJsonDocument<100> doc;
+  JsonDocument doc;
   DeserializationError error = deserializeJson(doc, body);
   
   if (error) {
@@ -168,7 +168,7 @@ void handleApiServoCycle() {
   
   Serial.printf("API: Servo cycle started - target: %d, count: %d, delay: %dms\n", cycleTarget, count, delayMs);
   
-  StaticJsonDocument<128> responseDoc;
+  JsonDocument responseDoc;
   responseDoc["status"] = "ok";
   responseDoc["cycles"] = count == 0 ? "infinite" : String(count);
   responseDoc["delay"] = delayMs;
@@ -189,7 +189,7 @@ void handleApiServoStop() {
   cycleRunning = false;
   commandCount++;
   
-  StaticJsonDocument<100> responseDoc;
+  JsonDocument responseDoc;
   responseDoc["status"] = "ok";
   responseDoc["stopped_at"] = cycleCount;
   
@@ -209,7 +209,7 @@ void handleApiServoSweep() {
   }
   
   String body = server.arg("plain");
-  StaticJsonDocument<100> doc;
+  JsonDocument doc;
   DeserializationError error = deserializeJson(doc, body);
   
   if (error) {
@@ -232,7 +232,7 @@ void handleApiServoSweep() {
   commandCount++;
   
   // Відправляємо відповідь одразу
-  StaticJsonDocument<100> responseDoc;
+  JsonDocument responseDoc;
   responseDoc["status"] = "ok";
   responseDoc["from"] = currentAngle;
   responseDoc["to"] = target;
